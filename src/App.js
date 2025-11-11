@@ -1,24 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import WorkshopInfo from "./components/WorkshopInfo";
+import RegistrationForm from "./components/RegistrationForm";
 
 function App() {
-  const [workshop, setWorkshop] = useState({});
-
-  useEffect(() => {
-    axios.get('http://localhost:3000/api/workshop')
-      .then(response => {
-        setWorkshop(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching workshop:', error);
-      });
-  }, []);
+  const [showForm, setShowForm] = useState(false);
 
   return (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
-      <h1>{workshop.workshopName}</h1>
-      <p>Seats Available: {workshop.seatsAvailable}</p>
-      <p>Price: ₹{workshop.price}</p>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      {showForm ? (
+        <RegistrationForm onBack={() => setShowForm(false)} />
+      ) : (
+        <WorkshopInfo onRegister={() => setShowForm(true)} />
+      )}
     </div>
   );
 }

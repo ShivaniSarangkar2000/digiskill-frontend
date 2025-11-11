@@ -5,11 +5,14 @@ const RegistrationForm = ({ onBack }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const res = await registerUser(name, email);
     setResponse(res);
+    setLoading(false);
   };
 
   if (response) {
@@ -18,7 +21,9 @@ const RegistrationForm = ({ onBack }) => {
         {response.status === "registered" ? (
           <>
             <h2 className="text-green-600 text-2xl font-bold mb-2">✅ Registration Successful!</h2>
-            <p>Your Registration ID: <strong>{response.registrationId}</strong></p>
+            <p>
+              Your Registration ID: <strong>{response.registrationId}</strong>
+            </p>
             <p>Seats Left: {response.seatsLeft}</p>
           </>
         ) : (
@@ -28,7 +33,10 @@ const RegistrationForm = ({ onBack }) => {
           </>
         )}
         <button
-          onClick={onBack}
+          onClick={() => {
+            setResponse(null);
+            onBack();
+          }}
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg w-full mt-4"
         >
           Back
@@ -64,9 +72,12 @@ const RegistrationForm = ({ onBack }) => {
 
       <button
         type="submit"
-        className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg w-full"
+        disabled={loading}
+        className={`bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg w-full ${
+          loading ? "opacity-50 cursor-not-allowed" : ""
+        }`}
       >
-        Submit
+        {loading ? "Submitting..." : "Submit"}
       </button>
 
       <button
