@@ -1,20 +1,24 @@
-import { useState } from "react";
-import WorkshopDetails from "./components/WorkshopDetails";
-import RegistrationForm from "./components/RegistrationForm";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
-  const [showForm, setShowForm] = useState(false);
+  const [workshop, setWorkshop] = useState({});
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/api/workshop')
+      .then(response => {
+        setWorkshop(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching workshop:', error);
+      });
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-indigo-500 to-purple-600 flex flex-col items-center justify-center px-4">
-      {!showForm ? (
-        <WorkshopDetails onRegister={() => setShowForm(true)} />
-      ) : (
-        <RegistrationForm onBack={() => setShowForm(false)} />
-      )}
-      <footer className="text-white mt-8 text-sm">
-        © 2025 Digiskill Academy | All Rights Reserved
-      </footer>
+    <div style={{ textAlign: 'center', padding: '20px' }}>
+      <h1>{workshop.workshopName}</h1>
+      <p>Seats Available: {workshop.seatsAvailable}</p>
+      <p>Price: ₹{workshop.price}</p>
     </div>
   );
 }
